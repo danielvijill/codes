@@ -1,1 +1,1 @@
-Simple codes for imaging
+Simple codes for working with radio FITS files
