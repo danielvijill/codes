@@ -1,0 +1,113 @@
+\documentclass{article}
+\usepackage{siunitx}
+\usepackage[spanish]{babel}
+\usepackage{cancel}
+\usepackage[arrowdel]{physics}
+\decimalpoint
+\usepackage{Sweave}
+\begin{document}
+\input{27_07_Daniel-concordance}
+
+
+\num{0.25}\\
+\num{6.626d-34}\\
+\num{6.626e-34}\\
+\num[exponent-product=\cdot]{6.626d-34}\\
+\num[exponent-base=\pi]{6.626e-34}\\
+\num{3 +- 2i}\\
+\num{2x3x5}\\
+\num[separate-uncertainty]{9.99+-0.009}\\
+\num{9.99+-0.009}\\
+\numlist{10;20;30;40}\\
+
+Trabajando angulos
+
+\ang{60}\\
+\ang{60;5;3}\\
+\ang{60; ;3}\\
+\ang{60;5; }\\
+
+Trabajando unidades
+
+\si{\meter\per\second}\\
+\si{\m\per\s}\\
+\si[per-mode=fraction]{\metre\per\second}\\
+
+\si{\ampere}\\
+\si{\kelvin}\\
+\si{\candela}\\
+\si{\mol}\\
+\si{\becquerel}\\
+\si{\angstrom}\\
+\si{\electronvolt}\\
+\si{\electronmass}\\
+\si{\degreeCelsius}\\
+\si{\cancel\kilogram\cancel\m}\\
+
+
+Multiplos \\
+
+\si{\micro\m}\\
+\si{\nano\coulomb}\\
+\si{\mega\pascal}\\
+\si{\centi\m}\\
+\(\cancelto{\rho}{0}\)
+
+Trabajando cantdades mas unidades\\
+
+\SI{2.50}{\cancel \micro\farad}
+\sisetup{separate-uncertainty}
+\SI{12.35+-0.52}{\kilogram}\\
+\SI{2x5x10}{\m} \\
+\SI[product-units = brackets-power]{2 x 3 x 4}{\metre}
+\SI[product-units = repeat]{2 x 3 x 4x5}{\metre}
+
+\newpage
+Trabajando con physics\\
+
+$ \qty(\frac{x}{2}) \qty(10+x) $
+$$ \qty(\frac{x}{2}) \qty(10+x) $$
+$$ (\frac{x}{2}) $$
+$\qty\big[x+1]$
+$$\qty\bigg[\frac{x+1}{x}]$$
+$\qty\Bigg(x+1)$
+$\qty\bigg{x+1}$
+$\qty\Bigg{x+1}$\\
+
+$\norm\big{a}$\\\\
+$\norm\Bigg{a}$\\\\
+$\norm{a}$\\\\
+$$\abs\Big{a}$$
+$\comm{A}{B}$\\
+$\acomm{A}{B}$\\
+$\comm\Big{A}{B}$\\
+
+Notación vectorial
+
+$\vb{A}$ %solo negrita
+$\vb*{A}$
+$\va{A}$
+$\va*{A}$
+
+$\vu{x}$
+$\vu{p}$\\
+$\vu{\rho} \vdot \vu{\varphi}$\\
+$\vu{\rho}\cp \vu{\varphi}$\\
+
+$\grad \Psi$\\
+$\div \va{E} $\\
+$\curl \vb{B_\rho^2}$\\
+$\laplacian \vb{E}$
+$\sin[m](x)$
+
+$$\pdv{f}{x}$$
+$$\pdv[n]{f}{x}$$
+$$\pdv[2]{f}{x}$$
+
+$\ket{\Psi}$
+$\bra{\Psi}$
+$\braket{\Psi}$
+$\expval{A}{\Psi}$
+
+\end{document}
+
