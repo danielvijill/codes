@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[subfolder, cleanup]{gnuplottex}
+\usepackage[nogin]{Sweave}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+Tabla de ajuste lineal:
+
+<<echo=FALSE, results=tex>>=
+L <- c(2.608, 2.526, 2.452, 2.379, 2.306, 2.231, 2.150, 2.066, 1.989, 1.917)
+t <- c(129.64, 127.72, 125.92, 123.73, 122.35, 120.42, 117.88, 115.7, 113.78, 111.28)
+tabla <- data.frame(L, t)
+tabla[,"T"]<- tabla$t/40
+ajuste_lineal <- lm(tabla$T^2 ~ tabla$L +0)
+salida <- summary(ajuste_lineal)
+tabla[5, "Coeficiente"] <- coef(ajuste_lineal)
+tabla[5, "Sigmay"] <- salida$sigma
+tabla[5, "SigmaB"] <- salida$coefficients[,2]
+tabla[5,"g"] <- na.omit(4*pi^2/tabla$Coeficiente)
+write.table(data.frame(tabla$L,tabla$T^2), file = "datos_pendulo", row.names = FALSE)
+write.table(rbind(coef(ajuste_lineal)), file = "coeficientes", row.names = FALSE)
+library(xtable)
+xtable(tabla)
+@
+
+Grafico de ajuste
+
+\begin{gnuplot}[terminal = cairolatex]
+coef = system("tail -1 coeficientes")
+B = word(coef, 1)
+set grid
+set xlabel "$L$"
+set ylabel "$T^2$"
+set title "$\\sigma_B$"
+plot "datos_pendulo" every :: 1 title "Datos", B*x
+\end{gnuplot}
+
+Forma alternativa de graficar:
+
+\begin{gnuplot}[terminal = cairolatex]
+set table "datosprueba"
+plot "coeficientes" using 0:(column(0)==1?(B=column(1)):column(1)) with table
+unset table
+plot "datos_pendulo" every :: 1 title "Datos", B*x
+\end{gnuplot}
+
+\end{document}

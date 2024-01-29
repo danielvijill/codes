@@ -1,0 +1,48 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+<<echo=False, results=hide>>=
+distPoisson <- function(x,y){
+	dpois(x,y)
+}
+@
+
+\begin{figure}[!h]
+\centering
+<<echo=FALSE, fig=TRUE, width=5, height=2.5>>=
+v <- 0:20
+plot(distPoisson(v, 0.25), type = "h", xlab = "v",
+	ylab = "P(v)", main = "Función de probabilidad")
+
+@
+\caption{Probabilidad para $\mu=0.25$}
+\end{figure}
+
+
+\begin{figure}
+\centering
+<<echo=FALSE, fig=TRUE, width=5, height=2.5>>=
+v <- 0:20
+plot(distPoisson(v, 0.75), type = "h", xlab = "v",
+	ylab = "P(v)", main = "Función de probabilidad")
+
+@
+\caption{Probabilidad para $\mu=0.75$}
+\end{figure}
+
+
+\begin{figure}
+\centering
+<<echo=FALSE, fig=TRUE, width=5, height=2.5>>=
+v <- 0:20
+plot(distPoisson(v, 9), type = "h", xlab = "v",
+	ylab = "P(v)", main = "Función de probabilidad")
+curve(dnorm(x, 9,3), add = TRUE)
+@
+\caption{Probabilidad para $\mu=9$}
+\end{figure}
+
+
+\end{document}

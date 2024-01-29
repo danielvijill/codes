@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[left=1cm, right=1cm]{geometry}
+\usepackage[subfolder, cleanup]{gnuplottex}
+\usepackage{xcolor}
+\definecolor{tbcol}{rgb}{1,1,1}
+\usepackage[nogin]{Sweave}
+\decimalpoint
+%\spanishdecimal{.}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+Hola
+
+<<echo=FALSE>>=
+propagacion <- function(x,y){
+    z <- ceiling(length(y)/2)
+    tabla <- data.frame(x,y)
+    tabla[,"g"] <- 4*pi^2*x/y^2
+    tabla[z,"gprom"] <- mean(tabla$g)
+    tabla[z,"sigmag"] <- sd(tabla$g)/sqrt(length(x))
+    # print(tabla)
+    library(xtable)
+    colnames(tabla) <- c("$L$ (m)", "$T$ (s)", "$g$ (m/s$^2$)", "$\\bar{g}$ (m/s$^2$)", "$\\sigma_{\\bar{g}}$ (m/s$^2$)")
+    A <- xtable(tabla, digits = c(0,3,3,5,5,4), caption = "Análisis $g$")
+    print(A, sanitize.text.function = function(x){x})
+}
+@
+
+<<echo=FALSE, results=tex>>=
+
+l <- c(0.512, 0.597, 0.682, 0.797, 0.883)
+T <- c(1.448, 1.566, 1.669, 1.804, 1.896)
+
+propagacion(l,T)
+@
+
+\end{document}

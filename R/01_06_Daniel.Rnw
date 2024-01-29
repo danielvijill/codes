@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage[spanish, es-tabla]{babel}
+
+\usepackage[subfolder, cleanup]{gnuplottex}
+\usepackage[nogin]{Sweave}
+\decimalpoint %para que de resultados con puntos
+%\spanishdecimal{.}
+\usepackage[left=1cm, right=1cm]{geometry
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+Ajuetse lineal $Y = Bx $
+
+<<echo=F, results=tex >>=
+library(xtable)
+
+L <- c(2.608, 2.526, 2.452, 2.379, 2.306, 2.231, 2.150, 2.066, 1.989, 1.917)
+t <- c(129.64, 127.72, 125.92, 123.73, 122.35, 120.42, 117.88, 115.7, 113.78, 111.28)
+tabla <- data.frame(L, t)
+tabla[,"T"]<-tabla$t/40
+ajuste_lineal <- lm(tabla$T^2 ~ tabla$L + 0)
+salida <-summary(ajuste_lineal)
+tabla[5,"coeficientes"] <-coef(ajuste_lineal)
+tabla[5,"Sigmay"] <-salida$sigma
+tabla[5,"SigmaB"] <-salida$coefficients[,2] 
+tabla[5,"g"] <- na.omit(4*pi^2 /tabla$coeficientes)
+write.table(data.frame(tabla$L,tabla$T^2), file = "datos_pendulo",row.names = F) #genera un archivo con los datos
+write.table(coef(ajuste_lineal), file = "coeficientes",row.names = F) #genera un documento con los coeficientes de x
+colnames(tabla) <- c("$L$(m)", "$t$ (s)", "$T$ (s)", "$B$ (s$^2$/m)", "$\\sigma_y$ (s$^2$)", "$\\sigma
+                     _B$ (s$^2$/m)", "$g$ (m/s$^2$)")
+
+
+
+A <- xtable(tabla, digits = c(0, 3, 2, 5, 6, 6, 5, 4), align = "|cccccccc|", caption = "Tabla ajuste")
+print(A, sanitize.text.function = function(x){x}, scalebox = 0.9) #para que el colnames quede bien
+@
+
+\begin{center}
+\begin{gnuplot}[terminal = cairolatex]
+coef = system("tail -1 coeficientes")
+B = word(coef, 1)
+set grid
+set xlabel "$L$"
+set ylabel "$T^2$"
+set title "$\\sigma_B$"
+plot "datos_pendulo" every :: 1 title "Datos", B*x
+\end{gnuplot}
+
+\end{center}
+\newpage
+Ajuste lineal $Y = A + Bx$
+
+<<echo=F, results=tex >>=
+library(xtable) 
+
+L <- c(2.608, 2.526, 2.452, 2.379, 2.306, 2.231, 2.150, 2.066, 1.989, 1.917)
+t <- c(129.64, 127.72, 125.92, 123.73, 122.35, 120.42, 117.88, 115.7, 113.78, 111.28)
+tabla <- data.frame(L, t)
+tabla[,"T"]<-tabla$t/40 
+ajuste_lineal2 <- lm(tabla$T^2 ~ tabla$L)
+salida2 <-summary(ajuste_lineal2)
+#tabla[5,"coeficientes"] <-coef(ajuste_linealdos)
+
+#tabla[5:6, "Coeficients"] <- coef(ajuste_lineal)
+tabla[5, "A"] <- salida2$coefficients[1,1]
+tabla[5, "B"] <- salida2$coefficients[2,1]
+
+tabla[5, "sigmay"] <-salida2$sigma
+tabla[5, "sigmaA"] <-salida2$coefficients[1,2]
+tabla[5, "sigmaB"] <-salida2$coefficients[2,2]
+tabla[5,"g"] <- na.omit(4*pi^2/tabla$B)
+write.table(data.frame(tabla$L,tabla$T^2), file = "datos_pendulo2",row.names = F) #genera un archivo con los datos
+write.table(rbind(coef(ajuste_lineal2)), file = "coeficientes2",row.names = F) #genera un documento con los coeficientes de x
+
+colnames(tabla) <- c("$L$(m)", "$t$ (s)", "$T$ (s)","A (s$^2$)" ,"$B$ (s$^2$/m)", "$\\sigma_y$ (s$^2$)","$\\sigma_A$ (s$^2$)","$\\sigma_B$ (s$^2$/m)", "$g$ (m/s$^2$)")
+
+A <- xtable(tabla, digits = c(0, 3, 2, 5, 6, 6, 6, 6, 6, 5), align = "|cccccccccc|", caption = "Tabla ajuste")
+print(A, sanitize.text.function = function(x){x}, scalebox = 0.9) 
+
+@
+
+%si tenemosotro parametro ponemos c= word(coef, 3)
+\begin{center}
+\begin{gnuplot}[terminal = cairolatex]
+coef = system("tail -1 coeficientes2")
+A = word(coef, 1)
+B = word(coef, 2)
+set grid
+
+set xlabel "$L$"
+set ylabel "$T^2$"
+set title "Ajuste con dos parametros"
+plot "datos_pendulo2" every :: 1 title "Datos", A+B*x
+
+\end{gnuplot}
+\end{center}
+
+\newpage
+Ajuste $Y = A + Bx$ ponderado
+
+<<echo=F, results=tex >>=
+library(xtable) #pusimos esta libreria al inicio
+
+L <- c(2.608, 2.526, 2.452, 2.379, 2.306, 2.231, 2.150, 2.066, 1.989, 1.917)
+t <- c(129.64, 127.72, 125.92, 123.73, 122.35, 120.42, 117.88, 115.7, 113.78, 111.28)
+deltaP <- c(0.01, 0.02, 0.01, 0.02, 0.03, 0.01, 0.04, 0.04, 0.01, 0.03)
+tabla3 <- data.frame(L, t)
+tabla3[,"T"]<-tabla3$t/40 
+ajuste_lineal3 <- lm(tabla3$T^2 ~ tabla3$L, weights = 1/deltaP^2)#le agregamos los pesos
+salida3 <-summary(ajuste_lineal3)
+#tabla[5,"coeficientes"] <-coef(ajuste_linealdos)
+#tabla[5:6, "Coeficients"] <- coef(ajuste_lineal)
+tabla3[5, "A"] <- salida3$coefficients[1,1] #remplazo de coef
+tabla3[5, "B"] <- salida3$coefficients[2,1] #remplazo de coef
+
+#tabla3[5, "sigmay"] <-salida3$sigma
+tabla3[5, "sigmaA"] <-salida3$coefficients[1,2]
+tabla3[5, "sigmaB"] <-salida3$coefficients[2,2]
+tabla3[5,"g"] <- na.omit(4*pi^2/tabla3$B)
+write.table(data.frame(tabla3$L,tabla3$T^2), file = "datos_pendulo3",row.names = F) #genera un archivo con los datos
+write.table(rbind(coef(ajuste_lineal3)), file = "coeficientes3",row.names = F) #genera un documento con los coeficientes de x
+
+colnames(tabla3) <- c("$L$(m)", "$t$ (s)", "$T$ (s)","A (s$^2$)" ,"$B$ (s$^2$/m)","$\\sigma_A$ (s$^2$)","$\\sigma_B$ (s$^2$/m)", "$g$ (m/s$^2$)")
+
+A <- xtable(tabla3, digits = c(0, 3, 2, 5, 6, 6, 6, 6, 5), align = "|ccccccccc|", caption = "Tabla ajuste")
+print(A, sanitize.text.function = function(x){x}, scalebox = 0.9) #para que el colnames quede bien
+
+@
+\begin{center}
+\begin{gnuplot}[terminal = cairolatex]
+coef = system("tail -1 coeficientes2")
+A = word(coef, 1)
+B = word(coef, 2)
+set grid
+
+set xlabel "$L$"
+set ylabel "$T^2$"
+set title "Ajuste con dos parametros ponderado"
+plot "datos_pendulo3" every :: 1 title "Datos", A+B*x
+
+\end{gnuplot}
+\end{center}
+
+\end{document}
+
